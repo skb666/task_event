@@ -3,8 +3,6 @@
 
 extern void print_init(void);
 extern void print_handle(TASK *task);
-extern void toggle_b_init(void);
-extern void toggle_b_handle(TASK *task);
 extern void exit_init(void);
 extern void exit_handle(TASK *task);
 
