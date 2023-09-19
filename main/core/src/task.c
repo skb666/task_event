@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "common.h"
-#include "task.h"
 
 ring_define_static(EVENT, s_event_fifo, EVENT_FIFO_MAX, 0);
 static TASK_EVENT s_task_event_list[EVENT_TYPE_MAX];

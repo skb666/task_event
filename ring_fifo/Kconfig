@@ -1,5 +1,0 @@
-config RING_FIFO_ENABLED
-    bool "enable ring_fifo"
-    help
-        环形缓冲队列
-    default n

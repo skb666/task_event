@@ -1,5 +1,5 @@
-#ifndef __TASK_CONF_H__
-#define __TASK_CONF_H__
+#ifndef __TASK_USER_H__
+#define __TASK_USER_H__
 
 #include <stdint.h>
 

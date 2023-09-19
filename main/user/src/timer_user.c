@@ -1,4 +1,4 @@
-#include "timer_conf.h"
+#include "timer_user.h"
 
 #include "common.h"
 

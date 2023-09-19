@@ -1,10 +1,18 @@
 ################# Add include #################
-list(APPEND ADD_INCLUDE "inc")
+list(APPEND ADD_INCLUDE
+    "user/inc"    
+    "core/inc"
+    "app/inc"
+)
 # list(APPEND ADD_PRIVATE_INCLUDE "include_private")
 ###############################################
 
 ############## Add source files ###############
-append_srcs_dir(ADD_SRCS "src")
+append_srcs_dir(ADD_SRCS
+    "user/src"    
+    "core/src"
+    "app/src"
+)
 # FILE(GLOB_RECURSE EXTRA_SRC  "src/*.c")
 # FILE(GLOB EXTRA_SRC  "src/*.c")
 # list(APPEND ADD_SRCS  ${EXTRA_SRC})
@@ -18,7 +26,7 @@ append_srcs_dir(ADD_SRCS "src")
 ###############################################
 
 ###### Add required/dependent components ######
-list(APPEND ADD_REQUIREMENTS ring_fifo)
+# list(APPEND ADD_REQUIREMENTS ring_fifo)
 ###############################################
 
 ###### Add link search path for requirements/libs ######

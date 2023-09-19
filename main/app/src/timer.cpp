@@ -26,8 +26,9 @@ void Timer::start(int interval, std::function<void()> task) {
     std::thread([this, interval, task]() {
         while (!_try_to_expire) {
             // sleep every interval and do the task again and again until times up
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+            auto time_until = std::chrono::system_clock::now() + std::chrono::milliseconds(interval);
             task();
+            std::this_thread::sleep_until(time_until);
         }
 
         {

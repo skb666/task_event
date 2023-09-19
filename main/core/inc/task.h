@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "task_conf.h"
+#include "task_user.h"
 
 #ifdef __cplusplus
 extern "C" {

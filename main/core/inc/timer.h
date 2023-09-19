@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "timer_conf.h"
+#include "timer_user.h"
 
 #ifdef __cplusplus
 extern "C" {
