@@ -15,8 +15,11 @@ void task_update_times(TASK *task) {
 }
 
 static void task_event_init(void) {
+    uint32_t type;
+
     memset(&s_task_event_list, 0, sizeof(s_task_event_list));
-    for (uint32_t type = 0; type < (uint32_t)EVENT_TYPE_MAX; ++type) {
+
+    for (type = 0; type < (uint32_t)EVENT_TYPE_MAX; ++type) {
         s_task_event_list[type].type = (EVENT_TYPE)type;
     }
 }
@@ -87,7 +90,8 @@ int8_t task_event_publish(EVENT_TYPE type, void *data) {
 static void task_event_distribute(TASK *task_list) {
     int8_t err = 0;
     EVENT ev;
-    uint32_t list_size;
+    uint32_t i, list_size;
+    uint8_t flag;
 
     if (event_empty(&s_event_fifo)) {
         return;
@@ -98,25 +102,37 @@ static void task_event_distribute(TASK *task_list) {
     }
 
     while (event_count(&s_event_fifo)) {
-        err = event_get(&s_event_fifo, &ev);
+        err = event_peek(&s_event_fifo, &ev);
         if (err) {
             break;
         }
-        for (uint32_t i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
+        flag = 0;
+        for (i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
+            if (event_full(&(task_list[s_task_event_list[ev.type].subscribers[i]].events))) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag) {
+            break;
+        }
+        // 订阅者都有空余才分发
+        event_get(&s_event_fifo, &ev);
+        for (i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
             event_put(&(task_list[s_task_event_list[ev.type].subscribers[i]].events), &ev);
         }
     }
 }
 
 void task_init(void) {
-    uint32_t list_size;
+    uint32_t index, list_size;
     TASK *task_list;
 
     task_event_init();
 
     task_list = task_list_get(&list_size);
 
-    for (uint32_t index = 0; index < list_size; ++index) {
+    for (index = 0; index < list_size; ++index) {
         task_list[index].events = (RING_FIFO){
             .buffer = task_list[index].events_buffer,
             .capacity = TASK_EVENT_MAX,

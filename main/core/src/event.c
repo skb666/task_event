@@ -22,6 +22,14 @@ int8_t event_get(RING_FIFO *ring, EVENT *ev) {
     return err;
 }
 
+int8_t event_peek(RING_FIFO *ring, EVENT *ev) {
+    int8_t err = 0;
+
+    err = ring_peek(ring, ev);
+
+    return err;
+}
+
 uint16_t event_count(RING_FIFO *ring) {
     return ring_size(ring);
 }

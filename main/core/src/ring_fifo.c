@@ -45,6 +45,19 @@ int8_t ring_pop(RING_FIFO *ring, void *element) {
     return 0;
 }
 
+int8_t ring_peek(RING_FIFO *ring, void *element) {
+    uint8_t *pbuf = NULL;
+
+    if (ring == NULL || element == NULL || ring->size == 0) {
+        return -1;
+    }
+
+    pbuf = (uint8_t *)ring->buffer + ring->head * ring->element_size;
+    memcpy(element, pbuf, ring->element_size);
+
+    return 0;
+}
+
 NUM_TYPE ring_push_mult(RING_FIFO *ring, const void *elements, NUM_TYPE num) {
     uint8_t *inbuf = NULL;
     uint8_t *outbuf = NULL;
