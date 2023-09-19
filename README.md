@@ -53,7 +53,7 @@ task_loop();
 
 1. 在 [task_user.h](main/user/inc/task_user.h) 的 `EVENT_TYPE` 中添加定时器到达指定时间后产生的事件名称
 2. 在 [timer_user.h](main/user/inc/timer_user.h) 的 `TIMER_TICK` 中添加对应事件触发需要的时间
-3. 在 [timer_user.c](test_sample/main/user/src/timer_user.c) 的 `s_timer_list` 中以 `{事件名称, 重载间隔, 起始滴答值},` 的格式来增加一个定时器
+3. 在 [timer_user.c](main/user/src/timer_user.c) 的 `s_timer_list` 中以 `{事件名称, 重载间隔, 起始滴答值},` 的格式来增加一个定时器
 
 ### 用户任务
 
@@ -96,4 +96,4 @@ void task_update_times(TASK *task);
 **添加用户任务**
 
 1. 在 [task_user.h](main/user/inc/task_user.h) 的 `TASK_ID` 中添加任务 ID
-2. 在 [task_user.c](test_sample/main/user/src/task_user.c) 的 `s_task_list` 中添加任务，格式参照结构体 `TASK`
+2. 在 [task_user.c](main/user/src/task_user.c) 的 `s_task_list` 中添加任务，格式参照结构体 `TASK`
