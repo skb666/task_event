@@ -12,7 +12,7 @@ void main_loop(void) {
 
 int main() {
     Timer systick;
-    systick.start(1, [=] {
+    systick.start(1, [] {
         timer_increase();
         timer_loop();
     });
