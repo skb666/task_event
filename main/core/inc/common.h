@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define ARRAY_SIZE(array_name) (sizeof(array_name) / sizeof(array_name[0]))
+#define ARRAY_SIZE(array_name) ((int)(sizeof(array_name) / sizeof(array_name[0])))
 
 #ifdef __cplusplus
 extern "C" {
