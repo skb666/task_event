@@ -26,11 +26,12 @@ python ./project run
 
 ### 主程序接口
 
-周期运行以下接口，作为内部定时器及定时信号的驱动源
+周期运行以下接口，作为虚拟定时器及任务延时驱动源
 
 ```c
 timer_increase();
 timer_loop();
+task_time_loop();
 ```
 
 主程序中用以下接口对所有任务做初始化
@@ -63,6 +64,7 @@ task_loop();
 typedef struct _TASK {
     uint32_t id;                            // 任务 ID
     int32_t times;                          // 任务剩余执行次数，负数表示无穷次
+    uint32_t delay;                         // 任务延迟时间
     void (*init)(void);                     // 任务初始化回调
     void (*handle)(struct _TASK *);         // 任务处理回调
     EVENT events_buffer[TASK_EVENT_MAX];    // 内部使用，作为下面字段的 buffer

@@ -45,6 +45,17 @@ int8_t ring_pop(RING_FIFO *ring, void *element) {
     return 0;
 }
 
+int8_t ring_pop_unread(RING_FIFO *ring) {
+    if (ring == NULL || ring->size == 0) {
+        return -1;
+    }
+
+    ring->head = (ring->head + 1) % ring->capacity;
+    ring->size -= 1;
+
+    return 0;
+}
+
 int8_t ring_peek(RING_FIFO *ring, void *element) {
     uint8_t *pbuf = NULL;
 

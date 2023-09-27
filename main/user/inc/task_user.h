@@ -38,6 +38,7 @@ typedef struct _TASK_EVENT {
 typedef struct _TASK {
     uint32_t id;
     int32_t times;
+    uint32_t delay;
     void (*init)(void);
     void (*handle)(struct _TASK *);
     EVENT events_buffer[TASK_EVENT_MAX];

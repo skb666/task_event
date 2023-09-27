@@ -15,6 +15,7 @@ int main() {
     systick.start(1, [] {
         timer_increase();
         timer_loop();
+        task_time_loop();
     });
 
     main_init();

@@ -79,6 +79,13 @@ int8_t ring_push(RING_FIFO *ring, const void *element);
 int8_t ring_pop(RING_FIFO *ring, void *element);
 
 /**
+ * @brief  弹出单个数据
+ * @param  ring RING_FIFO 变量的地址
+ * @retval 是否成功弹出，失败时返回值小于 0
+ */
+int8_t ring_pop_unread(RING_FIFO *ring);
+
+/**
  * @brief  查看可被取出的数据
  * @param  ring RING_FIFO 变量的地址
  * @param  element 数据的存放地址

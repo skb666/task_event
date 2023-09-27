@@ -1,12 +1,33 @@
 #include "task.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "common.h"
 
 ring_define_static(EVENT, s_event_fifo, EVENT_FIFO_MAX, 0);
 static TASK_EVENT s_task_event_list[EVENT_TYPE_MAX];
+
+static int task_sort_cmp(const void *task_a, const void *task_b) {
+    if (((TASK *)task_a)->id > ((TASK *)task_b)->id) {
+        return 1;
+    } else if (((TASK *)task_a)->id < ((TASK *)task_b)->id) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+static int task_find_cmp(const void *id, const void *task) {
+    if (*(uint32_t *)id > ((TASK *)task)->id) {
+        return 1;
+    } else if (*(uint32_t *)id < ((TASK *)task)->id) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
 
 void task_update_times(TASK *task) {
     if (task->times > 0) {
@@ -84,14 +105,15 @@ int8_t task_event_publish(EVENT_TYPE type, void *data) {
 
     event.type = type;
     event.custom_data = data;
-    return event_put(&s_event_fifo, &event);
+    return event_push(&s_event_fifo, &event);
 }
 
-static void task_event_distribute(TASK *task_list) {
+static void task_event_distribute(TASK *task_list, uint32_t list_size) {
     int8_t err = 0;
     EVENT ev;
-    uint32_t i, list_size;
+    uint32_t i;
     uint8_t flag;
+    TASK *task = NULL;
 
     if (event_empty(&s_event_fifo)) {
         return;
@@ -108,7 +130,8 @@ static void task_event_distribute(TASK *task_list) {
         }
         flag = 0;
         for (i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
-            if (event_full(&(task_list[s_task_event_list[ev.type].subscribers[i]].events))) {
+            task = bsearch(&s_task_event_list[ev.type].subscribers[i], task_list, list_size, sizeof(TASK), task_find_cmp);
+            if (task && event_full(&task->events)) {
                 flag = 1;
                 break;
             }
@@ -117,10 +140,13 @@ static void task_event_distribute(TASK *task_list) {
             break;
         }
         // 订阅者都有空余才分发
-        event_get(&s_event_fifo, &ev);
         for (i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
-            event_put(&(task_list[s_task_event_list[ev.type].subscribers[i]].events), &ev);
+            task = bsearch(&s_task_event_list[ev.type].subscribers[i], task_list, list_size, sizeof(TASK), task_find_cmp);
+            if (task) {
+                event_push(&task->events, &ev);
+            }
         }
+        event_pop_only(&s_event_fifo);
     }
 }
 
@@ -146,6 +172,8 @@ void task_init(void) {
             task_list[index].init();
         }
     }
+
+    qsort(task_list, list_size, sizeof(TASK), task_sort_cmp);
 }
 
 void task_loop(void) {
@@ -154,13 +182,26 @@ void task_loop(void) {
 
     task_list = task_list_get(&list_size);
 
-    task_event_distribute(task_list);
+    task_event_distribute(task_list, list_size);
 
     for (uint32_t index = 0; index < list_size; ++index) {
-        if (task_list[index].times) {
+        if (task_list[index].times && !task_list[index].delay) {
             if (task_list[index].handle) {
                 task_list[index].handle(&task_list[index]);
             }
+        }
+    }
+}
+
+void task_time_loop(void) {
+    uint32_t list_size;
+    TASK *task_list;
+
+    task_list = task_list_get(&list_size);
+
+    for (uint32_t index = 0; index < list_size; ++index) {
+        if (task_list[index].delay > 0) {
+            task_list[index].delay -= 1;
         }
     }
 }

@@ -10,12 +10,14 @@ static TASK s_task_list[] = {
     {
         .id = TASK_ID_PRINT,
         .times = -1,
+        .delay = 0,
         .init = print_init,
         .handle = print_handle,
     },
     {
         .id = TASK_ID_EXIT,
         .times = -1,
+        .delay = 10000,
         .init = exit_init,
         .handle = exit_handle,
     },

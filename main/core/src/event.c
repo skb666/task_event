@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-int8_t event_put(RING_FIFO *ring, EVENT *ev) {
+int8_t event_push(RING_FIFO *ring, EVENT *ev) {
     int8_t err = 0;
 
     disable_global_irq();
@@ -12,11 +12,21 @@ int8_t event_put(RING_FIFO *ring, EVENT *ev) {
     return err;
 }
 
-int8_t event_get(RING_FIFO *ring, EVENT *ev) {
+int8_t event_pop(RING_FIFO *ring, EVENT *ev) {
     int8_t err = 0;
 
     disable_global_irq();
     err = ring_pop(ring, ev);
+    enable_global_irq();
+
+    return err;
+}
+
+int8_t event_pop_only(RING_FIFO *ring) {
+    int8_t err = 0;
+
+    disable_global_irq();
+    err = ring_pop_unread(ring);
     enable_global_irq();
 
     return err;

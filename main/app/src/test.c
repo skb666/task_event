@@ -3,12 +3,7 @@
 #include "task.h"
 #include "timer.h"
 
-void print_init(void) {
-    task_event_subscribe(EVENT_TYPE_TICK_1S, TASK_ID_PRINT);
-    task_event_subscribe(EVENT_TYPE_TICK_5S, TASK_ID_PRINT);
-}
-
-void print_handle(TASK *task) {
+void task_event_process(TASK *task, void (*callback)(EVENT *)) {
     int8_t err;
     EVENT ev;
 
@@ -17,49 +12,53 @@ void print_handle(TASK *task) {
     }
 
     while (event_count(&task->events)) {
-        err = event_get(&task->events, &ev);
+        err = event_peek(&task->events, &ev);
         if (err) {
             return;
         }
 
-        switch (ev.type) {
-            case EVENT_TYPE_TICK_1S: {
-                printf("tick_1s: %u\n", timer_get_tick());
-            } break;
-            case EVENT_TYPE_TICK_5S: {
-                printf("tick_5s: %u\n", timer_get_tick());
-                task_event_publish(EVENT_TYPE_EXIT, NULL);
-            } break;
-            default: {
-            } break;
-        }
+        callback(&ev);
 
+        event_pop_only(&task->events);
         task_update_times(task);
     }
+}
+
+void print_init(void) {
+    task_event_subscribe(EVENT_TYPE_TICK_1S, TASK_ID_PRINT);
+    task_event_subscribe(EVENT_TYPE_TICK_5S, TASK_ID_PRINT);
+}
+
+void print_cb(EVENT *ev) {
+    switch (ev->type) {
+        case EVENT_TYPE_TICK_1S: {
+            printf("tick_1s: %u\n", timer_get_tick());
+        } break;
+        case EVENT_TYPE_TICK_5S: {
+            printf("tick_5s: %u\n", timer_get_tick());
+            task_event_publish(EVENT_TYPE_EXIT, NULL);
+        } break;
+        default: {
+        } break;
+    }
+}
+
+void print_handle(TASK *task) {
+    task_event_process(task, print_cb);
 }
 
 void exit_init(void) {
     task_event_subscribe(EVENT_TYPE_EXIT, TASK_ID_EXIT);
 }
 
-void exit_handle(TASK *task) {
-    int8_t err;
-    EVENT ev;
-
-    if (event_empty(&task->events)) {
-        return;
-    }
-
-    err = event_get(&task->events, &ev);
-    if (err) {
-        return;
-    }
-
-    if (ev.type == EVENT_TYPE_EXIT) {
-        task_update_times(task);
-
+void exit_cb(EVENT *ev) {
+    if (ev->type == EVENT_TYPE_EXIT) {
         printf("exit\n");
 
         exit(0);
     }
+}
+
+void exit_handle(TASK *task) {
+    task_event_process(task, exit_cb);
 }

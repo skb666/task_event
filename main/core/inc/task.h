@@ -17,6 +17,7 @@ int8_t task_event_publish(EVENT_TYPE type, void *data);
 
 void task_init(void);
 void task_loop(void);
+void task_time_loop(void);
 
 #ifdef __cplusplus
 }
