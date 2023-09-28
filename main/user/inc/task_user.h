@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "event.h"
-
 #define EVENT_FIFO_MAX 256
 #define EVENT_SUBSCRIBE_MAX 5
 #define TASK_EVENT_MAX 10
@@ -29,23 +27,7 @@ typedef enum _TASK_ID {
     TASK_ID_MAX,
 } TASK_ID;
 
-typedef struct _TASK_EVENT {
-    EVENT_TYPE type;
-    uint32_t number_of_subscribe;
-    uint32_t subscribers[EVENT_SUBSCRIBE_MAX];
-} TASK_EVENT;
-
-typedef struct _TASK {
-    uint32_t id;
-    int32_t times;
-    uint32_t delay;
-    void (*init)(void);
-    void (*handle)(struct _TASK *);
-    EVENT events_buffer[TASK_EVENT_MAX];
-    RING_FIFO events;
-} TASK;
-
-TASK *task_list_get(uint32_t *num);
+void *task_list_get(uint32_t *num);
 
 #ifdef __cplusplus
 }

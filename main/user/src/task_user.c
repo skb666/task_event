@@ -1,5 +1,6 @@
-#include "common.h"
 #include "task.h"
+
+#include "common.h"
 
 extern void print_init(void);
 extern void print_handle(TASK *task);
@@ -24,7 +25,7 @@ static TASK s_task_list[] = {
 };
 const static uint32_t s_task_list_size = ARRAY_SIZE(s_task_list);
 
-TASK *task_list_get(uint32_t *num) {
+void *task_list_get(uint32_t *num) {
     *num = s_task_list_size;
     return s_task_list;
 }

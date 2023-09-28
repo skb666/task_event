@@ -22,8 +22,11 @@ void timer_loop(void) {
         if (timer_list[index].tick > 0) {
             timer_list[index].tick -= 1;
         }
-        if (timer_list[index].tick == 0) {
+        if (timer_list[index].times && timer_list[index].tick == 0) {
             timer_list[index].tick = timer_list[index].reload;
+            if (timer_list[index].times > 0) {
+                timer_list[index].times -= 1;
+            }
             if (task_event_publish(timer_list[index].event_type, NULL)) {
                 // printf("[ERROR] event_publish\n");
                 return;
