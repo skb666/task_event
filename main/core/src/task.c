@@ -34,6 +34,20 @@ void task_update_times(TASK *task) {
     }
 }
 
+void task_delay_ms(uint32_t id, uint32_t ms) {
+    TASK *task, *task_list;
+    uint32_t list_size;
+
+    task_list = task_list_get(&list_size);
+
+    task = bsearch(&id, task_list, list_size, sizeof(TASK), task_find_cmp);
+    if (task) {
+        disable_global_irq();
+        task->delay = ms;
+        enable_global_irq();
+    }
+}
+
 static void task_event_init(void) {
     uint32_t type;
 
@@ -95,7 +109,7 @@ int8_t task_event_unsubscribe(EVENT_TYPE type, uint32_t id) {
     return -1;
 }
 
-int8_t task_event_publish(EVENT_TYPE type, void *data) {
+int8_t task_event_publish(EVENT_TYPE type, void *data, uint32_t priority) {
     EVENT event;
 
     if (event_full(&s_event_fifo)) {
@@ -104,7 +118,8 @@ int8_t task_event_publish(EVENT_TYPE type, void *data) {
 
     event.type = type;
     event.custom_data = data;
-    return event_push(&s_event_fifo, &event);
+    event.priority = priority;
+    return event_binsert(&s_event_fifo, &event);
 }
 
 static void task_event_distribute(TASK *task_list, uint32_t list_size) {
@@ -141,7 +156,7 @@ static void task_event_distribute(TASK *task_list, uint32_t list_size) {
         // 订阅者都有空余才分发
         for (i = 0; i < s_task_event_list[ev.type].number_of_subscribe; ++i) {
             task = bsearch(&s_task_event_list[ev.type].subscribers[i], task_list, list_size, sizeof(TASK), task_find_cmp);
-            if (task) {
+            if (task && task->times) {
                 event_push(&task->events, &ev);
             }
         }

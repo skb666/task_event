@@ -50,11 +50,23 @@ task_loop();
 
 用户定时器用于周期性产生定时器事件
 
+用户定时器结构体如下：
+
+```c
+typedef struct _TIMER {
+    EVENT_TYPE event_type;  // 定时器产生的事件类型
+    uint32_t priority;      // 事件优先级
+    uint32_t reload;        // 重载时间
+    uint32_t tick;          // 内部计时器
+    int32_t times;          // 事件产生次数
+} TIMER;
+```
+
 **添加用户定时器**
 
 1. 在 [task_user.h](main/user/inc/task_user.h) 的 `EVENT_TYPE` 中添加定时器到达指定时间后产生的事件名称
 2. 在 [timer_user.h](main/user/inc/timer_user.h) 的 `TIMER_TICK` 中添加对应事件触发需要的时间
-3. 在 [timer_user.c](main/user/src/timer_user.c) 的 `s_timer_list` 中以 `{事件名称, 重载间隔, 起始滴答值, 事件产生次数},` 的格式来增加一个定时器
+3. 在 [timer_user.c](main/user/src/timer_user.c) 的 `s_timer_list` 中增加一个定时器，格式参照结构体 `TIMER`
 
 ### 用户任务
 
@@ -77,9 +89,9 @@ typedef struct _TASK {
 在任务初始化回调中一般进行事件注册，使用接口如下：
 
 ```c
-int8_t task_event_subscribe(EVENT_TYPE type, uint32_t id);      // 订阅任务事件
-int8_t task_event_unsubscribe(EVENT_TYPE type, uint32_t id);    // 取消订阅任务事件
-int8_t task_event_publish(EVENT_TYPE type, void *data);         // 发布任务事件
+int8_t task_event_subscribe(EVENT_TYPE type, uint32_t id);                  // 订阅任务事件
+int8_t task_event_unsubscribe(EVENT_TYPE type, uint32_t id);                // 取消订阅任务事件
+int8_t task_event_publish(EVENT_TYPE type, void *data, uint32_t priority);  // 发布任务事件
 ```
 
 每当有任务事件产生时，内部会先将任务事件分发给订阅了该事件的任务，保存于任务事件缓冲区以进行下一步处理。

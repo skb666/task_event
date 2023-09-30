@@ -1,6 +1,5 @@
-#include "task.h"
-
 #include "common.h"
+#include "task.h"
 
 extern void print_init(void);
 extern void print_handle(TASK *task);
@@ -18,7 +17,7 @@ static TASK s_task_list[] = {
     {
         .id = TASK_ID_EXIT,
         .times = -1,
-        .delay = 10000,
+        .delay = 0,
         .init = exit_init,
         .handle = exit_handle,
     },

@@ -36,7 +36,8 @@ void print_cb(EVENT *ev) {
         } break;
         case EVENT_TYPE_TICK_5S: {
             printf("tick_5s: %u\n", timer_get_tick());
-            task_event_publish(EVENT_TYPE_EXIT, NULL);
+            task_event_publish(EVENT_TYPE_EXIT, NULL, 0);
+            task_delay_ms(TASK_ID_EXIT, 5000);
         } break;
         default: {
         } break;
@@ -54,7 +55,6 @@ void exit_init(void) {
 void exit_cb(EVENT *ev) {
     if (ev->type == EVENT_TYPE_EXIT) {
         printf("exit\n");
-
         exit(0);
     }
 }

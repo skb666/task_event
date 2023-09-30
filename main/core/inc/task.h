@@ -27,10 +27,11 @@ typedef struct _TASK {
 } TASK;
 
 void task_update_times(TASK *task);
+void task_delay_ms(uint32_t id, uint32_t ms);
 
 int8_t task_event_subscribe(EVENT_TYPE type, uint32_t id);
 int8_t task_event_unsubscribe(EVENT_TYPE type, uint32_t id);
-int8_t task_event_publish(EVENT_TYPE type, void *data);
+int8_t task_event_publish(EVENT_TYPE type, void *data, uint32_t priority);
 
 void task_init(void);
 void task_loop(void);

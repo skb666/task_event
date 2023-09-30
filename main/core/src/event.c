@@ -2,11 +2,31 @@
 
 #include "common.h"
 
+static int event_compare(const void *ev_a, const void *ev_b) {
+    if (((EVENT *)ev_a)->priority > ((EVENT *)ev_b)->priority) {
+        return 1;
+    } else if (((EVENT *)ev_a)->priority < ((EVENT *)ev_b)->priority) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
 int8_t event_push(RING_FIFO *ring, EVENT *ev) {
     int8_t err = 0;
 
     disable_global_irq();
     err = ring_push(ring, (void *)ev);
+    enable_global_irq();
+
+    return err;
+}
+
+int8_t event_binsert(RING_FIFO *ring, EVENT *ev) {
+    int8_t err = 0;
+
+    disable_global_irq();
+    err = ring_binsert(ring, (void *)ev, event_compare);
     enable_global_irq();
 
     return err;

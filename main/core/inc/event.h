@@ -11,10 +11,12 @@ extern "C" {
 
 typedef struct _EVENT {
     uint32_t type;
+    uint32_t priority;
     void *custom_data;
 } EVENT;
 
 int8_t event_push(RING_FIFO *ring, EVENT *ev);
+int8_t event_binsert(RING_FIFO *ring, EVENT *ev);
 int8_t event_pop(RING_FIFO *ring, EVENT *ev);
 int8_t event_pop_only(RING_FIFO *ring);
 int8_t event_peek(RING_FIFO *ring, EVENT *ev);
