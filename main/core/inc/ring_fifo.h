@@ -4,8 +4,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifndef NUM_TYPE
+#ifndef NUM_BITS
+#define NUM_BITS 16
+#endif
+
+#if (NUM_BITS == 16)
 #define NUM_TYPE uint16_t
+#define NUM_TYPE_SIGNED int16_t
+#elif (NUM_BITS == 32)
+#define NUM_TYPE uint32_t
+#define NUM_TYPE_SIGNED int32_t
+#elif (NUM_BITS == 64)
+#define NUM_TYPE uint64_t
+#define NUM_TYPE_SIGNED int64_t
 #endif
 
 #ifdef __cplusplus
@@ -71,6 +82,15 @@ typedef struct {
 int8_t ring_push(RING_FIFO *ring, const void *element);
 
 /**
+ * @brief  优先队列，二分插入（仅在非覆盖模式下可用）
+ * @param  ring RING_FIFO 变量的地址
+ * @param  element 待存入数据的地址
+ * @param  compare 比较 element 的函数，返回值 [-1, 0, 1]
+ * @retval 是否成功放入，失败时返回值小于 0
+ */
+int8_t ring_binsert(RING_FIFO *ring, const void *element, int (*compare)(const void *, const void *));
+
+/**
  * @brief  取出单个数据
  * @param  ring RING_FIFO 变量的地址
  * @param  element 取出数据的存放地址
@@ -86,10 +106,10 @@ int8_t ring_pop(RING_FIFO *ring, void *element);
 int8_t ring_pop_unread(RING_FIFO *ring);
 
 /**
- * @brief  查看可被取出的数据
+ * @brief  查看下一个会被取出的数据
  * @param  ring RING_FIFO 变量的地址
  * @param  element 数据的存放地址
- * @retval 是否成功取出，失败时返回值小于 0
+ * @retval 是否成功，失败时返回值小于 0
  */
 int8_t ring_peek(RING_FIFO *ring, void *element);
 

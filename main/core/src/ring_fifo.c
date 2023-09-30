@@ -29,6 +29,59 @@ int8_t ring_push(RING_FIFO *ring, const void *element) {
     return 0;
 }
 
+int8_t ring_binsert(RING_FIFO *ring, const void *element, int (*compare)(const void *, const void *)) {
+    uint8_t *pbuf = NULL;
+    uint8_t *pbuf_tmp = NULL;
+    NUM_TYPE_SIGNED i, left, right, mid;
+
+    if (ring == NULL || element == NULL || compare == NULL) {
+        return -1;
+    }
+
+    /* 支持覆盖或已满 */
+    if (ring->cover || ring->size >= ring->capacity) {
+        return -1;
+    }
+
+    if (ring->size < 1) {
+        pbuf = (uint8_t *)ring->buffer + ring->tail * ring->element_size;
+        memcpy(pbuf, element, ring->element_size);
+        ring->tail = (ring->tail + 1) % ring->capacity;
+        ring->size += 1;
+
+        return 0;
+    }
+
+    left = 0;
+    right = ring->size - 1;
+
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (compare(element, ring->buffer + ((ring->head + mid) % ring->capacity) * ring->element_size) < 0) {
+            // 从小到大：key 小，往左找
+            // 从大到小：key 大，往左找
+            right = mid - 1;
+        } else {
+            // 从小到大：key 大于等于，往右找
+            // 从大到小：key 小于等于，往右找
+            left = mid + 1;
+        }
+    }
+
+    for (i = ring->size; i > left; --i) {
+        pbuf = (uint8_t *)ring->buffer + ((ring->head + i) % ring->capacity) * ring->element_size;
+        pbuf_tmp = (uint8_t *)ring->buffer + ((ring->head + i - 1) % ring->capacity) * ring->element_size;
+        memcpy(pbuf, pbuf_tmp, ring->element_size);
+    }
+
+    pbuf = (uint8_t *)ring->buffer + ((ring->head + left) % ring->capacity) * ring->element_size;
+    memcpy(pbuf, element, ring->element_size);
+    ring->tail = (ring->tail + 1) % ring->capacity;
+    ring->size += 1;
+
+    return 0;
+}
+
 int8_t ring_pop(RING_FIFO *ring, void *element) {
     uint8_t *pbuf = NULL;
 
