@@ -19,7 +19,7 @@ int8_t event_push(RING_FIFO *ring, EVENT *ev);
 int8_t event_binsert(RING_FIFO *ring, EVENT *ev);
 int8_t event_pop(RING_FIFO *ring, EVENT *ev);
 int8_t event_pop_only(RING_FIFO *ring);
-int8_t event_peek(RING_FIFO *ring, EVENT *ev);
+int8_t event_peek(RING_FIFO *ring, EVENT **ev);
 uint16_t event_count(RING_FIFO *ring);
 int8_t event_empty(RING_FIFO *ring);
 int8_t event_full(RING_FIFO *ring);

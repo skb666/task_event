@@ -5,7 +5,7 @@
 
 void task_event_process(TASK *task, void (*callback)(EVENT *)) {
     int8_t err;
-    EVENT ev;
+    EVENT *ev;
 
     if (event_empty(&task->events)) {
         return;
@@ -17,7 +17,7 @@ void task_event_process(TASK *task, void (*callback)(EVENT *)) {
             return;
         }
 
-        callback(&ev);
+        callback(ev);
 
         event_pop_only(&task->events);
         task_update_times(task);

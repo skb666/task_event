@@ -106,12 +106,11 @@ int8_t ring_pop(RING_FIFO *ring, void *element);
 int8_t ring_pop_unread(RING_FIFO *ring);
 
 /**
- * @brief  查看下一个会被取出的数据
+ * @brief  获取下一个被取出数据的地址
  * @param  ring RING_FIFO 变量的地址
- * @param  element 数据的存放地址
- * @retval 是否成功，失败时返回值小于 0
+ * @retval 成功时返回数据地址，否则返回 NULL
  */
-int8_t ring_peek(RING_FIFO *ring, void *element);
+void *ring_peek(RING_FIFO *ring);
 
 /**
  * @brief  放入多个数据

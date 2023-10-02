@@ -109,17 +109,12 @@ int8_t ring_pop_unread(RING_FIFO *ring) {
     return 0;
 }
 
-int8_t ring_peek(RING_FIFO *ring, void *element) {
-    uint8_t *pbuf = NULL;
-
-    if (ring == NULL || element == NULL || ring->size == 0) {
-        return -1;
+void *ring_peek(RING_FIFO *ring) {
+    if (ring == NULL || ring->size == 0) {
+        return NULL;
     }
 
-    pbuf = (uint8_t *)ring->buffer + ring->head * ring->element_size;
-    memcpy(element, pbuf, ring->element_size);
-
-    return 0;
+    return (uint8_t *)ring->buffer + ring->head * ring->element_size;
 }
 
 NUM_TYPE ring_push_mult(RING_FIFO *ring, const void *elements, NUM_TYPE num) {

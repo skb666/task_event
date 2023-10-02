@@ -52,12 +52,13 @@ int8_t event_pop_only(RING_FIFO *ring) {
     return err;
 }
 
-int8_t event_peek(RING_FIFO *ring, EVENT *ev) {
-    int8_t err = 0;
+int8_t event_peek(RING_FIFO *ring, EVENT **ev) {
+    *ev = ring_peek(ring);
+    if (*ev == NULL) {
+	return -1;
+    }
 
-    err = ring_peek(ring, ev);
-
-    return err;
+    return 0;
 }
 
 uint16_t event_count(RING_FIFO *ring) {
