@@ -106,6 +106,14 @@ int8_t ring_pop(RING_FIFO *ring, void *element);
 int8_t ring_pop_unread(RING_FIFO *ring);
 
 /**
+ * @brief  弹出多个数据
+ * @param  ring RING_FIFO 变量的地址
+ * @param  num 弹出数据的个数
+ * @retval 成功弹出几个
+ */
+NUM_TYPE ring_pop_mult_unread(RING_FIFO *ring, NUM_TYPE num);
+
+/**
  * @brief  获取下一个被取出数据的地址
  * @param  ring RING_FIFO 变量的地址
  * @retval 成功时返回数据地址，否则返回 NULL
@@ -129,6 +137,14 @@ NUM_TYPE ring_push_mult(RING_FIFO *ring, const void *elements, NUM_TYPE num);
  * @retval 成功取出几个
  */
 NUM_TYPE ring_pop_mult(RING_FIFO *ring, void *elements, NUM_TYPE num);
+
+/**
+ * @brief  深拷贝 RING_FIFO
+ * @param  ring_dst 目标 RING_FIFO 变量的地址
+ * @param  ring_src 源 RING_FIFO 变量的地址
+ * @retval 成功返回 0，否则返回 -1
+ */
+int8_t ring_deep_copy(RING_FIFO *ring_dst, RING_FIFO *ring_src);
 
 /**
  * @brief  重置 RING_FIFO
