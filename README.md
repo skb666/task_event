@@ -13,13 +13,13 @@ curl -fsSL https://raw.githubusercontent.com/skb666/PyBuildKit/master/install.sh
 **编译**
 
 ```bash
-python ./project build
+python ./project.py build
 ```
 
 **运行**
 
 ```bash
-python ./project run
+python ./project.py run
 ```
 
 ## 接口说明
