@@ -121,6 +121,14 @@ NUM_TYPE ring_pop_mult_unread(RING_FIFO *ring, NUM_TYPE num);
 void *ring_peek(RING_FIFO *ring);
 
 /**
+ * @brief  获取当前数据地址的下一个数据地址
+ * @param  ring RING_FIFO 变量的地址
+ * @param  ptr 当前数据地址
+ * @retval ptr 传入 NULL 时返回数据首地址，有下一个数据时返回下一个数据地址，否则返回 NULL
+ */
+void *ring_peek_next(RING_FIFO *ring, void *ptr);
+
+/**
  * @brief  放入多个数据
  * @param  ring RING_FIFO 变量的地址
  * @param  elements 待存入数据块的首地址

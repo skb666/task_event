@@ -136,6 +136,27 @@ void *ring_peek(RING_FIFO *ring) {
     return (uint8_t *)ring->buffer + ring->head * ring->element_size;
 }
 
+void *ring_peek_next(RING_FIFO *ring, void *ptr) {
+    NUM_TYPE index = 0;
+
+    if (ring == NULL || ring->size == 0) {
+        return NULL;
+    }
+
+    if (ptr == NULL) {
+        // 返回头部指针
+        return (uint8_t *)ring->buffer + ring->head * ring->element_size;
+    }
+
+    index = ((uint8_t *)ptr - (uint8_t *)ring->buffer) / ring->element_size + 1;
+    index %= ring->capacity;
+    if (index != ring->tail) {
+        return (uint8_t *)ring->buffer + index * ring->element_size;
+    }
+
+    return NULL;
+}
+
 NUM_TYPE ring_push_mult(RING_FIFO *ring, const void *elements, NUM_TYPE num) {
     uint8_t *inbuf = NULL;
     uint8_t *outbuf = NULL;
