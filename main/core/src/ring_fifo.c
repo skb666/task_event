@@ -57,7 +57,7 @@ int8_t ring_binsert(RING_FIFO *ring, const void *element, int (*compare)(const v
 
     while (left <= right) {
         mid = (left + right) / 2;
-        if (compare(element, ring->buffer + ((ring->head + mid) % ring->capacity) * ring->element_size) < 0) {
+        if (compare(element, (uint8_t *)ring->buffer + ((ring->head + mid) % ring->capacity) * ring->element_size) < 0) {
             // 从小到大：key 小，往左找
             // 从大到小：key 大，往左找
             right = mid - 1;
