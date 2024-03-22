@@ -14,8 +14,8 @@ typedef struct _TIMER {
     EVENT_TYPE event_type;
     uint32_t priority;
     uint32_t reload;
-    uint32_t tick;
-    int32_t times;
+    volatile uint32_t tick;
+    volatile int32_t times;
 } TIMER;
 
 void timer_increase(void);

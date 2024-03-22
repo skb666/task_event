@@ -2,7 +2,7 @@
 
 #include "task.h"
 
-static uint32_t s_timer_tick = 0;
+volatile static uint32_t s_timer_tick = 0;
 
 void timer_increase(void) {
     s_timer_tick++;

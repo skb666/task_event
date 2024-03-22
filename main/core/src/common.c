@@ -6,7 +6,7 @@
 #include "main.h"
 #endif
 
-static uint32_t s_irq_count = 0;
+volatile static uint32_t s_irq_count = 0;
 
 void reset_global_irq(void) {
     s_irq_count = 0;

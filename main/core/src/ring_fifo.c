@@ -95,6 +95,10 @@ int8_t ring_pop(RING_FIFO *ring, void *element) {
 
     ring->size -= 1;
 
+    if (ring_is_empty(ring)) {
+        ring_reset(ring);
+    }
+
     return 0;
 }
 
@@ -105,6 +109,10 @@ int8_t ring_pop_unread(RING_FIFO *ring) {
 
     ring->head = (ring->head + 1) % ring->capacity;
     ring->size -= 1;
+
+    if (ring_is_empty(ring)) {
+        ring_reset(ring);
+    }
 
     return 0;
 }
@@ -123,6 +131,10 @@ NUM_TYPE ring_pop_mult_unread(RING_FIFO *ring, NUM_TYPE num) {
         cnt = num;
         ring->head = (ring->head + cnt) % ring->capacity;
         ring->size -= cnt;
+
+        if (ring_is_empty(ring)) {
+            ring_reset(ring);
+        }
     }
 
     return cnt;
@@ -270,6 +282,10 @@ NUM_TYPE ring_pop_mult(RING_FIFO *ring, void *elements, NUM_TYPE num) {
 
     ring->head = (ring->head + cnt) % ring->capacity;
     ring->size -= cnt;
+
+    if (ring_is_empty(ring)) {
+        ring_reset(ring);
+    }
 
     return cnt;
 }

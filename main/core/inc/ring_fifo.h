@@ -24,13 +24,13 @@ extern "C" {
 #endif
 
 typedef struct {
-    void *buffer;           // 数据块地址
-    NUM_TYPE capacity;      // 数据最大存放个数
-    NUM_TYPE element_size;  // 单个数据占用的字节数
-    NUM_TYPE cover;         // 是否支持覆盖
-    NUM_TYPE head;          // 起始下标
-    NUM_TYPE tail;          // 结尾下标
-    NUM_TYPE size;          // 数据实际个数
+    void *buffer;            // 数据块地址
+    NUM_TYPE capacity;       // 数据最大存放个数
+    NUM_TYPE element_size;   // 单个数据占用的字节数
+    NUM_TYPE cover;          // 是否支持覆盖
+    volatile NUM_TYPE head;  // 起始下标
+    volatile NUM_TYPE tail;  // 结尾下标
+    volatile NUM_TYPE size;  // 数据实际个数
 } RING_FIFO;
 
 /**
