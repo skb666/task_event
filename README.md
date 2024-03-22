@@ -54,11 +54,11 @@ task_loop();
 
 ```c
 typedef struct _TIMER {
-    EVENT_TYPE event_type;  // 定时器产生的事件类型
-    uint32_t priority;      // 事件优先级
-    uint32_t reload;        // 重载时间
-    uint32_t tick;          // 内部计时器
-    int32_t times;          // 事件产生次数
+    EVENT_TYPE event_type;      // 定时器产生的事件类型
+    uint32_t priority;          // 事件优先级
+    uint32_t reload;            // 重载时间
+    volatile uint32_t tick;     // 内部计时器
+    volatile int32_t times;     // 事件产生次数
 } TIMER;
 ```
 
@@ -75,8 +75,8 @@ typedef struct _TIMER {
 ```c
 typedef struct _TASK {
     uint32_t id;                            // 任务 ID
-    int32_t times;                          // 任务剩余执行次数，负数表示无穷次
-    uint32_t delay;                         // 任务延迟时间
+    volatile int32_t times;                 // 任务剩余执行次数，负数表示无穷次
+    volatile uint32_t delay;                // 任务延迟时间
     void (*init)(void);                     // 任务初始化回调
     void (*handle)(struct _TASK *);         // 任务处理回调
     EVENT events_buffer[TASK_EVENT_MAX];    // 内部使用，作为下面字段的 buffer
