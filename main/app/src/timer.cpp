@@ -63,8 +63,9 @@ void Timer::stop() {
         _expired_cond.wait(locker, [this] { return _expired == true; });
 
         // reset the timer
-        if (_expired == true)
+        if (_expired == true) {
             _try_to_expire = false;
+        }
     }
 }
 
