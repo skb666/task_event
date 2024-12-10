@@ -183,11 +183,18 @@ int8_t ring_is_full(RING_FIFO *ring);
 NUM_TYPE ring_size(RING_FIFO *ring);
 
 /**
- * @brief  打印 RING_FIFO 内部信息
+ * @brief  获取 RING_FIFO 容量
  * @param  ring RING_FIFO 变量的地址
- * @retval None
+ * @retval RING_FIFO 容量
  */
-void print_ring(RING_FIFO *ring);
+NUM_TYPE ring_capacity(RING_FIFO *ring);
+
+/**
+ * @brief  获取 RING_FIFO 剩余可用容量
+ * @param  ring RING_FIFO 变量的地址
+ * @retval RING_FIFO 剩余可用容量
+ */
+NUM_TYPE ring_available(RING_FIFO *ring);
 
 #ifdef __cplusplus
 }

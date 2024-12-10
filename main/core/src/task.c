@@ -4,9 +4,11 @@
 #include <string.h>
 
 #include "common.h"
+#include "timer.h"
 
 ring_define_static(EVENT, s_event_fifo, EVENT_FIFO_MAX, 0);
 static TASK_EVENT s_task_event_list[EVENT_TYPE_MAX];
+volatile static uint8_t s_task_init = 0;
 
 static int task_sort_cmp(const void *task_a, const void *task_b) {
     if (((TASK *)task_a)->id > ((TASK *)task_b)->id) {
@@ -112,7 +114,7 @@ int8_t task_event_unsubscribe(EVENT_TYPE type, uint32_t id) {
 int8_t task_event_publish(EVENT_TYPE type, void *data, uint32_t priority) {
     EVENT event;
 
-    if (event_full(&s_event_fifo)) {
+    if (!s_task_init || event_full(&s_event_fifo)) {
         return -1;
     }
 
@@ -188,6 +190,7 @@ void task_init(void) {
     }
 
     qsort(task_list, list_size, sizeof(TASK), task_sort_cmp);
+    s_task_init = 1;
 }
 
 void task_loop(void) {
@@ -210,6 +213,12 @@ void task_loop(void) {
 void task_time_loop(void) {
     uint32_t list_size;
     TASK *task_list;
+
+    if (!s_task_init) {
+        return;
+    }
+
+    timer_loop();
 
     task_list = task_list_get(&list_size);
 

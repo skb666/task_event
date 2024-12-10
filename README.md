@@ -30,7 +30,6 @@ python ./project.py run
 
 ```c
 timer_increase();
-timer_loop();
 task_time_loop();
 ```
 

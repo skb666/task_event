@@ -2,6 +2,9 @@
 
 #include "common.h"
 
+/**
+ * 事件优先级小的先处理
+ */
 static int event_compare(const void *ev_a, const void *ev_b) {
     if (((EVENT *)ev_a)->priority > ((EVENT *)ev_b)->priority) {
         return 1;
@@ -55,7 +58,7 @@ int8_t event_pop_only(RING_FIFO *ring) {
 int8_t event_peek(RING_FIFO *ring, EVENT **ev) {
     *ev = ring_peek(ring);
     if (*ev == NULL) {
-	return -1;
+        return -1;
     }
 
     return 0;
@@ -71,4 +74,10 @@ int8_t event_empty(RING_FIFO *ring) {
 
 int8_t event_full(RING_FIFO *ring) {
     return ring_is_full(ring);
+}
+
+void event_clean(RING_FIFO *ring) {
+    disable_global_irq();
+    ring_reset(ring);
+    enable_global_irq();
 }
